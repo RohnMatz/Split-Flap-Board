@@ -170,7 +170,7 @@ export default function DisplayPage() {
             letterSpacing: '0.1em',
           }}
         >
-          {saving ? 'SAVING...' : saved ? 'SAVED ✓' : 'SAVE'}
+          {saving ? 'SAVING...' : saved ? 'SAVED \u2713' : 'SAVE'}
         </button>
       </div>
 
@@ -231,7 +231,7 @@ export default function DisplayPage() {
               {preset.name}
             </div>
             <div style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.3)', marginTop: '0.1rem' }}>
-              {preset.location || `${preset.cols}×${preset.rows}`}
+              {preset.location || `${preset.cols}\u00d7${preset.rows}`}
             </div>
           </button>
         ))}
@@ -355,80 +355,6 @@ export default function DisplayPage() {
         </div>
       </div>
 
-      {/* Alignment */}
-      <h2 style={{ fontSize: '0.8rem', color: '#666', letterSpacing: '0.12em', margin: '2rem 0 1rem' }}>
-        TEXT ALIGNMENT
-      </h2>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
-        <div>
-          <label style={{ fontSize: '0.7rem', color: '#666', letterSpacing: '0.1em', display: 'block', marginBottom: '0.5rem' }}>
-            HORIZONTAL
-          </label>
-          <div style={{ display: 'flex', gap: '0.375rem' }}>
-            {(['left', 'center', 'right', 'justify'] as const).map((v) => (
-              <button
-                key={v}
-                onClick={() => setConfig({ ...config, textHAlign: v })}
-                style={{
-                  flex: 1,
-                  padding: '0.35rem 0',
-                  background: config.textHAlign === v ? '#e85d04' : '#111',
-                  border: `1px solid ${config.textHAlign === v ? '#e85d04' : '#333'}`,
-                  color: config.textHAlign === v ? '#fff' : '#888',
-                  borderRadius: '3px',
-                  cursor: 'pointer',
-                  fontFamily: 'monospace',
-                  fontSize: '0.65rem',
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase',
-                }}
-              >
-                {v === 'justify' ? 'FULL' : v.toUpperCase()}
-              </button>
-            ))}
-          </div>
-          <p style={{ fontSize: '0.65rem', color: '#444', marginTop: '0.4rem' }}>
-            {config.textHAlign === 'left' && 'Text starts at left edge'}
-            {config.textHAlign === 'center' && 'Text centered on board (default)'}
-            {config.textHAlign === 'right' && 'Text aligned to right edge'}
-            {config.textHAlign === 'justify' && 'Words spread to fill full width'}
-          </p>
-        </div>
-        <div>
-          <label style={{ fontSize: '0.7rem', color: '#666', letterSpacing: '0.1em', display: 'block', marginBottom: '0.5rem' }}>
-            VERTICAL
-          </label>
-          <div style={{ display: 'flex', gap: '0.375rem' }}>
-            {(['top', 'middle', 'bottom'] as const).map((v) => (
-              <button
-                key={v}
-                onClick={() => setConfig({ ...config, textVAlign: v })}
-                style={{
-                  flex: 1,
-                  padding: '0.35rem 0',
-                  background: config.textVAlign === v ? '#e85d04' : '#111',
-                  border: `1px solid ${config.textVAlign === v ? '#e85d04' : '#333'}`,
-                  color: config.textVAlign === v ? '#fff' : '#888',
-                  borderRadius: '3px',
-                  cursor: 'pointer',
-                  fontFamily: 'monospace',
-                  fontSize: '0.65rem',
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase',
-                }}
-              >
-                {v.toUpperCase()}
-              </button>
-            ))}
-          </div>
-          <p style={{ fontSize: '0.65rem', color: '#444', marginTop: '0.4rem' }}>
-            {config.textVAlign === 'top' && 'Content starts at top row (default)'}
-            {config.textVAlign === 'middle' && 'Content centered vertically'}
-            {config.textVAlign === 'bottom' && 'Content anchored to bottom rows'}
-          </p>
-        </div>
-      </div>
-
       {/* Location */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
         <h2 style={{ fontSize: '0.8rem', color: '#666', letterSpacing: '0.12em', margin: 0 }}>LOCATION</h2>
@@ -447,7 +373,7 @@ export default function DisplayPage() {
             letterSpacing: '0.08em',
           }}
         >
-          {locating ? 'LOCATING...' : '⊕ USE MY LOCATION'}
+          {locating ? 'LOCATING...' : '\u2295 USE MY LOCATION'}
         </button>
         {locError && (
           <span style={{ fontSize: '0.7rem', color: '#cc4444', fontFamily: 'monospace' }}>

@@ -172,11 +172,6 @@ async function fetchFeedResult(feedRow: FeedRow, config: AppConfig): Promise<Fee
 }
 
 async function getResultForFeed(feedRow: FeedRow, config: AppConfig): Promise<FeedResult | null> {
-  // Countdown is real-time, skip cache
-  if (feedRow.type === 'countdown') {
-    return fetchFeedResult(feedRow, config);
-  }
-
   const cached = getCachedFeed(feedRow.id);
   if (cached) return cached;
 
@@ -211,20 +206,8 @@ export async function getCurrentBoardState(): Promise<{
   const elapsed = now - slotStartedAt;
   const currentDuration = slots[currentSlotIndex % slots.length].duration * 1000;
 
-  // Still within the current slot's duration — return unchanged revision so client skips update
+  // Still within the current slot's duration — return unchanged (client deduplicates on revision)
   if (slotStartedAt > 0 && elapsed < currentDuration) {
-    // Re-fetch the current slot result (from cache) to return proper data
-    const currentSlot = slots[currentSlotIndex % slots.length];
-    if (currentSlot.feed_id) {
-      const feedRow = db
-        .prepare('SELECT * FROM feeds WHERE id = ? AND enabled = 1')
-        .get(currentSlot.feed_id) as FeedRow | undefined;
-      if (feedRow) {
-        const cached = await getResultForFeed(feedRow, config);
-        if (cached) return { result: cached, revision, config };
-      }
-    }
-    // Fallback: return a quote with unchanged revision
     return { result: fetchQuote([], config.cols), revision, config };
   }
 
@@ -236,12 +219,6 @@ export async function getCurrentBoardState(): Promise<{
   // Find the next relevant slot, trying each in order
   for (let attempts = 0; attempts < slots.length; attempts++) {
     const slot = slots[currentSlotIndex % slots.length];
-
-    // Check time-of-day restriction
-    if (!isWithinHours(slot.start_hour, slot.end_hour, config.timezone)) {
-      currentSlotIndex = (currentSlotIndex + 1) % slots.length;
-      continue;
-    }
 
     if (slot.feed_id) {
       const feedRow = db

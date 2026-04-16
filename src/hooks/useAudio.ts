@@ -51,17 +51,6 @@ export function useAudio(initialEnabled = true, initialVolume = 0.7): UseAudioRe
     };
   }, [resumeContext, initContext]);
 
-  // Close AudioContext on unmount so any already-scheduled clicks don't bleed into other pages
-  useEffect(() => {
-    return () => {
-      if (ctxRef.current) {
-        ctxRef.current.close().catch(() => {});
-        ctxRef.current = null;
-        masterGainRef.current = null;
-      }
-    };
-  }, []);
-
   const synthesizeClick = useCallback((ctx: AudioContext, master: GainNode, time: number) => {
     // Classic split-flap "clack" — short burst of mid-range filtered noise
     const bufferSize = Math.floor(ctx.sampleRate * 0.008);

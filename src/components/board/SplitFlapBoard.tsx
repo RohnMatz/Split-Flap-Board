@@ -40,21 +40,26 @@ export default function SplitFlapBoard({
   const currentPatternRef = useRef<AnimationPattern>('wave-lr');
   const prevTargetRef = useRef<string[]>([]);
   const waveCalledRef = useRef(false);
-  // Ghost trigger: incremented each time the Matrix pattern fires
-  const [ghostTrigger, setGhostTrigger] = useState(0);
+  const [scale, setScale] = useState(1);
 
   const computeScale = useCallback(() => {
     const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-    const parse = (s: string) => (s.endsWith('rem') ? parseFloat(s) * rem : parseFloat(s));
-    const cellW = parse(config.cellWidth) + 2;
+    const parse = (s: string) => s.endsWith('rem') ? parseFloat(s) * rem : parseFloat(s);
+    const cellW = parse(config.cellWidth) + 2; // +2px margin
     const cellH = parse(config.cellHeight) + 2;
-    const naturalW = config.cols * cellW + 24;
+    const naturalW = config.cols * cellW + 24; // +24 board padding
     const naturalH = config.rows * cellH + 24 + (config.rows - 1) * 2;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const s = Math.min((vw * 0.96) / naturalW, (vh * 0.9) / naturalH, 1.8);
     setScale(Math.max(s, 0.25));
   }, [config.cols, config.rows, config.cellWidth, config.cellHeight]);
+
+  useEffect(() => {
+    computeScale();
+    window.addEventListener('resize', computeScale);
+    return () => window.removeEventListener('resize', computeScale);
+  }, [computeScale]);
 
   useEffect(() => {
     computeScale();

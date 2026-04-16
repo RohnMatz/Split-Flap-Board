@@ -6,7 +6,7 @@ import { useBoardState } from '@/hooks/useBoardState';
 import { useAudio } from '@/hooks/useAudio';
 import type { AppConfig } from '@/types/config';
 
-// Re-flow server rows (formatted for serverCols width) into displayCols × displayRows.
+// Re-flow server rows (formatted for serverCols width) into displayCols x displayRows.
 // Words are preserved; lines are padded with spaces.
 function reflowRows(rows: string[], displayCols: number, displayRows: number): string[] {
   const words = rows.join(' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean);
@@ -54,25 +54,6 @@ function portraitGrid(config: AppConfig, vw: number, vh: number): { cols: number
 
   return { cols, rows };
 }
-
-const iconBtnStyle: React.CSSProperties = {
-  background: 'rgba(255,255,255,0.05)',
-  border: '1px solid rgba(255,255,255,0.1)',
-  color: 'rgba(255,255,255,0.4)',
-  width: '2rem',
-  height: '2rem',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  cursor: 'pointer',
-  borderRadius: '6px',
-  padding: 0,
-};
-
-const iconLinkStyle: React.CSSProperties = {
-  ...iconBtnStyle,
-  textDecoration: 'none',
-};
 
 export default function BoardPage() {
   const { state, error, config } = useBoardState();
@@ -231,54 +212,24 @@ export default function BoardPage() {
       {/* Controls */}
       <div style={{
         position: 'absolute', top: '1rem', right: '1rem',
-        display: 'flex', gap: '0.375rem', zIndex: 100,
+        display: 'flex', gap: '0.5rem', zIndex: 100,
       }}>
-        {/* Sound toggle */}
-        <button
-          onClick={(e) => { e.stopPropagation(); toggleAudio(); }}
-          title={audioEnabled ? 'Mute' : 'Unmute'}
-          style={iconBtnStyle}
-        >
-          {audioEnabled ? (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-            </svg>
-          ) : (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-              <line x1="23" y1="9" x2="17" y2="15"/>
-              <line x1="17" y1="9" x2="23" y2="15"/>
-            </svg>
-          )}
+        <button onClick={(e) => { e.stopPropagation(); toggleAudio(); }}
+          style={{
+            background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+            color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem', fontFamily: 'monospace',
+            padding: '0.3rem 0.6rem', cursor: 'pointer', borderRadius: '3px', letterSpacing: '0.1em',
+          }}>
+          {audioEnabled ? 'SND ON' : 'SND OFF'}
         </button>
-
-        {/* Clock */}
-        <a href="/clock" onClick={(e) => e.stopPropagation()} title="Clock" style={iconLinkStyle}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12 6 12 12 16 14"/>
-          </svg>
-        </a>
-
-        {/* Share */}
-        <a href="/config/share" onClick={(e) => e.stopPropagation()} title="Share" style={iconLinkStyle}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="18" cy="5" r="3"/>
-            <circle cx="6" cy="12" r="3"/>
-            <circle cx="18" cy="19" r="3"/>
-            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-          </svg>
-        </a>
-
-        {/* Settings */}
-        <a href="/config" onClick={(e) => e.stopPropagation()} title="Settings" style={iconLinkStyle}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-          </svg>
+        <a href="/config" onClick={(e) => e.stopPropagation()}
+          style={{
+            background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+            color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem', fontFamily: 'monospace',
+            padding: '0.3rem 0.6rem', cursor: 'pointer', borderRadius: '3px',
+            letterSpacing: '0.1em', textDecoration: 'none',
+          }}>
+          SETTINGS
         </a>
       </div>
 
