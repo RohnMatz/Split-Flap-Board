@@ -1,12 +1,14 @@
 # Stage 1: Install production dependencies
 FROM node:22-alpine AS deps
 WORKDIR /app
+RUN apk add --no-cache build-base python3 py3-setuptools
 COPY package*.json ./
 RUN npm ci --omit=dev
 
 # Stage 2: Build
 FROM node:22-alpine AS builder
 WORKDIR /app
+RUN apk add --no-cache build-base python3 py3-setuptools
 COPY package*.json ./
 RUN npm ci
 COPY . .
