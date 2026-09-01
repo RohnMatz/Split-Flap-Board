@@ -78,28 +78,7 @@ function getConfig(): AppConfig {
 }
 
 /** Returns true if the current hour (in local server time) is within [start, end). */
-function isWithinHours(
-  startHour: number | null,
-  endHour: number | null,
-  timezone: string,
-): boolean {
-  if (startHour === null || endHour === null) return true;
-  try {
-    const formatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: timezone,
-      hour: 'numeric',
-      hour12: false,
-    });
-    const currentHour = parseInt(formatter.format(new Date()), 10);
-    if (startHour <= endHour) {
-      return currentHour >= startHour && currentHour < endHour;
-    }
-    // Wraps midnight: e.g. start=22, end=6
-    return currentHour >= startHour || currentHour < endHour;
-  } catch {
-    return true;
-  }
-}
+
 
 async function fetchFeedResult(feedRow: FeedRow, config: AppConfig): Promise<FeedResult | null> {
   const feedConfig = JSON.parse(feedRow.config_json) as Record<string, unknown>;
