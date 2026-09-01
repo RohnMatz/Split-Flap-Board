@@ -40,8 +40,7 @@ export default function SplitFlapBoard({
   const currentPatternRef = useRef<AnimationPattern>('wave-lr');
   const prevTargetRef = useRef<string[]>([]);
   const waveCalledRef = useRef(false);
-  const [scale, setScale] = useState(1);
-
+const [ghostTrigger, setGhostTrigger] = useState(0);
   const computeScale = useCallback(() => {
     const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
     const parse = (s: string) => s.endsWith('rem') ? parseFloat(s) * rem : parseFloat(s);
