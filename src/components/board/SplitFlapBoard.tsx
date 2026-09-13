@@ -50,7 +50,7 @@ const [ghostTrigger, setGhostTrigger] = useState(0);
     const naturalH = config.rows * cellH + 24 + (config.rows - 1) * 2;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const s = Math.min((vw * 0.96) / naturalW, (vh * 0.9) / naturalH, 1.8);
+    const s = Math.min((vw * 0.99) / naturalW, (vh * 0.99) / naturalH, 1.8);
     setScale(Math.max(s, 0.25));
   }, [config.cols, config.rows, config.cellWidth, config.cellHeight]);
 
