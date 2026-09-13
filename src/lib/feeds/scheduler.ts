@@ -104,16 +104,34 @@ async function fetchFeedResult(feedRow: FeedRow, config: AppConfig): Promise<Fee
   );
 
   if (items.length === 0) return null;
+const FIVE_MINUTES = 5 * 60 * 1000;
+const now = Date.now();
 
-  const currentIndex = newsIndexByFeed.get(feedRow.id) ?? 0;
-  const result = items[currentIndex % items.length];
+let rotation = newsRotationByFeed.get(feedRow.id);
 
-  newsIndexByFeed.set(
-    feedRow.id,
-    (currentIndex + 1) % items.length,
+if (!rotation) {
+  rotation = {
+    index: 0,
+    changedAt: now,
+  };
+  newsRotationByFeed.set(feedRow.id, rotation);
+}
+
+if (now - rotation.changedAt >= FIVE_MINUTES) {
+  const steps = Math.floor(
+    (now - rotation.changedAt) / FIVE_MINUTES
   );
 
-  return result;
+  rotation.index =
+    (rotation.index + steps) % items.length;
+
+  rotation.changedAt += steps * FIVE_MINUTES;
+
+  newsRotationByFeed.set(feedRow.id, rotation);
+}
+
+return items[rotation.index % items.length];
+
 }
 
       case 'launches': {
