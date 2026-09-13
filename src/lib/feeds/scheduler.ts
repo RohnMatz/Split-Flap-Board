@@ -43,7 +43,10 @@ interface FeedRow {
 let currentSlotIndex = 0;
 let slotStartedAt = 0;
 let revision = 0;
-const newsIndexByFeed = new Map<string, number>();
+const newsRotationByFeed = new Map<
+  string,
+  { index: number; changedAt: number }
+>();
 function getConfig(): AppConfig {
   const db = getDb();
   const row = db.prepare('SELECT * FROM app_config WHERE id = 1').get() as Record<string, unknown>;
