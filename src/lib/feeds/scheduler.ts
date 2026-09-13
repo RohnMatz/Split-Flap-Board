@@ -43,7 +43,7 @@ interface FeedRow {
 let currentSlotIndex = 0;
 let slotStartedAt = 0;
 let revision = 0;
-
+const newsIndexByFeed = new Map<string, number>();
 function getConfig(): AppConfig {
   const db = getDb();
   const row = db.prepare('SELECT * FROM app_config WHERE id = 1').get() as Record<string, unknown>;
@@ -89,12 +89,29 @@ async function fetchFeedResult(feedRow: FeedRow, config: AppConfig): Promise<Fee
       case 'weather':
         return await fetchWeather(config.latitude, config.longitude, cols);
 
-      case 'news': {
-        const rssUrl = (feedConfig.rssUrl as string) ?? 'https://feeds.bbci.co.uk/news/rss.xml';
-        const source = (feedConfig.source as string) ?? 'NEWS';
-        const items = await fetchNews(rssUrl, source, cols);
-        return items[0] ?? null;
-      }
+     case 'news': {
+  const rssUrl = (feedConfig.rssUrl as string) ?? 'https://feeds.bbci.co.uk/news/rss.xml';
+  const source = (feedConfig.source as string) ?? 'NEWS';
+
+  const items = await fetchNews(
+    rssUrl,
+    source,
+    cols,
+    config.rows,
+  );
+
+  if (items.length === 0) return null;
+
+  const currentIndex = newsIndexByFeed.get(feedRow.id) ?? 0;
+  const result = items[currentIndex % items.length];
+
+  newsIndexByFeed.set(
+    feedRow.id,
+    (currentIndex + 1) % items.length,
+  );
+
+  return result;
+}
 
       case 'launches': {
         const windowHours = (feedConfig.windowHours as number) ?? 48;
@@ -151,6 +168,10 @@ async function fetchFeedResult(feedRow: FeedRow, config: AppConfig): Promise<Fee
 }
 
 async function getResultForFeed(feedRow: FeedRow, config: AppConfig): Promise<FeedResult | null> {
+   if (feedRow.type === 'news') {
+    return await fetchFeedResult(feedRow, config);
+  }
+  
   const cached = getCachedFeed(feedRow.id);
   if (cached) return cached;
 
