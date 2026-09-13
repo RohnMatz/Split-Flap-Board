@@ -114,13 +114,13 @@ const [ghostTrigger, setGhostTrigger] = useState(0);
   }, [targetRows]);
 
   // Apply alignment to the target rows for display
-  const alignedTarget = alignRows(
-    targetRows,
-    config.cols,
-    config.textHAlign ?? 'center',
-    config.textVAlign ?? 'top',
-    config.rows,
-  );
+const alignedTarget = alignRows(
+  targetRows,
+  config.cols,
+  'left',
+  config.textVAlign ?? 'top',
+  config.rows,
+);
 
   const emptyRows = Array.from(
     { length: Math.max(0, config.rows - displayedRows.length) },
