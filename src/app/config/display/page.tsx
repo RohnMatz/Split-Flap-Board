@@ -245,7 +245,7 @@ export default function DisplayPage() {
         <div>
           <h3 style={{ fontSize: '0.7rem', color: '#555', letterSpacing: '0.1em', marginBottom: '1rem' }}>GRID</h3>
           <Slider label="COLUMNS" value={config.cols} min={8} max={40} onChange={(v) => setConfig({ ...config, cols: v })} />
-          <Slider label="ROWS" value={config.rows} min={1} max={6} onChange={(v) => setConfig({ ...config, rows: v })} />
+          <Slider label="ROWS" value={config.rows} min={1} max={12} onChange={(v) => setConfig({ ...config, rows: v })} />
           <Slider label="ROTATION INTERVAL (SEC)" value={config.rotationInterval} min={5} max={120} onChange={(v) => setConfig({ ...config, rotationInterval: v })} />
         </div>
 
